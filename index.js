@@ -9,7 +9,9 @@ const db = mysql.createConnection({
     user: 'root',
     password: 'root',
     database: 'employees_db'
-});
+},
+console.log('Success! Connected to the employees database.')
+);
 
 // main userMenu function
 function init() {
@@ -47,8 +49,50 @@ function init() {
                     updateEmployee();
                     break;
                 case 'Exit': console.log('See you later!');
-                    console.clear();
+                db.end();
             }
         })
 };
+
+function viewAllDepartments() {
+    let query = 'select * from department'
+    db.query(query, function (err, res){
+        console.table(res);
+        init();
+    })
+};
+
+function viewAllRoles() {
+    let query = 'select * from roles'
+    db.query(query, function (err, res){
+        console.table(res);
+        init();
+    })
+};
+
+function viewAllEmployees() {
+    let query = 'select * from employee'
+    db.query(query, function (err, res){
+        console.table(res);
+        init();
+    })
+};
+
+function addNewDepartment() {
+    inquirer
+    .prompt({
+        name: 'newDeptName',
+        type: 'input',
+        message: "What is this new department's name?"
+    })
+    .then(function(data) {
+        let query = `insert into department (dept_name) values ('${data.newDeptName}')`
+        db.query(query, function (err, res){
+            if (err) throw err;
+            console.log(`${data.newDeptName} department added to Departments table.`);
+        })
+    })
+};
+
+init();
 
