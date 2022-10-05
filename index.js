@@ -10,7 +10,7 @@ const db = mysql.createConnection({
     password: 'root',
     database: 'employees_db'
 },
-console.log('Success! Connected to the employees database.')
+    console.log('Success! Connected to the employees database.')
 );
 
 // main userMenu function
@@ -49,50 +49,94 @@ function init() {
                     updateEmployee();
                     break;
                 case 'Exit': console.log('See you later!');
-                db.end();
+                    db.end();
             }
         })
 };
 
+// Function to display all departments in table form
 function viewAllDepartments() {
     let query = 'select * from department'
-    db.query(query, function (err, res){
+    db.query(query, function (err, res) {
         console.table(res);
         init();
     })
 };
 
+// Function to display all roles in table form
 function viewAllRoles() {
     let query = 'select * from roles'
-    db.query(query, function (err, res){
+    db.query(query, function (err, res) {
         console.table(res);
         init();
     })
 };
 
+// Function to display all employees in table form
 function viewAllEmployees() {
     let query = 'select * from employee'
-    db.query(query, function (err, res){
+    db.query(query, function (err, res) {
         console.table(res);
         init();
     })
 };
 
+// Function to generate a new department
 function addNewDepartment() {
     inquirer
-    .prompt({
-        name: 'newDeptName',
-        type: 'input',
-        message: "What is this new department's name?"
-    })
-    .then(function(data) {
-        let query = `insert into department (dept_name) values ('${data.newDeptName}')`
-        db.query(query, function (err, res){
-            if (err) throw err;
-            console.log(`${data.newDeptName} department added to Departments table.`);
+        .prompt({
+            name: 'newDeptName',
+            type: 'input',
+            message: "What is this new department's name?"
         })
-    })
+        .then(function (data) {
+            let query = `insert into department (dept_name) values ('${data.newDeptName}')`
+            db.query(query, function (err, res) {
+                if (err) throw err;
+                console.log(`${data.newDeptName} department added to Departments table.`);
+            })
+        })
 };
 
+// Function to add a new employee
+function addNewEmployee() {
+    db.query('select * from roles', function (err, res) {
+        if (err) throw err;
+        inquirer
+            .prompt([{
+                name: 'newEmpName',
+                message: "What is this new employee's first name?",
+                type: 'input'
+            }, {
+                name: 'newEmpLastName',
+                message: "What is this new employee's last name?",
+                type: 'input'
+            }, {
+                name: 'title',
+                message: "What is this new employee's role's ID number?",
+                type: 'list',
+                choices: [
+                    1,
+                    2,
+                    3,
+                    4]
+            }
+            ])
+            .then(function (data) {
+                let getRole = `select id from roles where title = '${data.title}'`;
+                db.query(getRole, function (err, results) {
+                    if (err) throw err;
+                    let query = `insert into employee (first_name, last_name, role_id) values ("${data.newEmpName}", "${data.newEmpLastName}", "${results}")`;
+                    db.query(query, function (err, results) {
+                        if (err) throw err;
+                        console.log(`${data.newEmpName} ${data.newEmpLastName} has been added to the Employees table.`);
+                        init();
+                    })
+                })
+            })
+    })
+}
+
+// Initiation function
 init();
 
