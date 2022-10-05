@@ -5,6 +5,10 @@
 
   ## Description: 
   Our assignment this module was to build a command-line application from scratch to manage a company's employee database, using Node.js, Inquirer, and MySQL. I was successful getting the structure of the app solidified and several functions to work, though I have a few to revisit to achieve full functionality.
+
+  [LIVE LINK to Google Drive video walkthrough](https://drive.google.com/file/d/15ZGnZvbZ1qUOUwuFOR_X8QWsxVkt0PQF/view)
+
+  ![Walkthrough gif](./assets/esselman%20app%20walkthrough.gif)
   
 
   ## Table of Contents:
